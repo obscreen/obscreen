@@ -1,0 +1,14 @@
+[Unit]
+Description=Obscreen Player
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/xinit /home/pi/obscreen/var/run/play -- :0 -nolisten tcp vt7 -keeptty
+User=pi
+Group=pi
+Restart=on-failure
+Environment=DISPLAY=:0
+
+[Install]
+WantedBy=graphical.target
