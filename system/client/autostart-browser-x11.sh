@@ -49,7 +49,6 @@ chromium-browser \
   --noerrdialogs \
   --single-process \
   --kiosk \
-  --incognito \
   --user-data-dir=${CHROMIUM_DIRECTORY} \
   --no-sandbox \
   --window-position=0,0 \
