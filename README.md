@@ -6,7 +6,7 @@
 
 Obscreen is a user-friendly self-hosted digital signage tool leveraging chromium browser. 
 
-<img src="https://github.com/jr-k/obscreen/blob/master/docs/screenshot-playlist-edit.png" width="700" alt="" />
+<img src="https://github.com/obscreen/obscreen/blob/master/docs/screenshot-playlist-edit.png" width="700" alt="" />
 
 ---
 
@@ -41,25 +41,25 @@ It is a temporary live demo, all data will be deleted after 30 minutes (~30secs 
 
 Light Mode:
 
-<img src="https://github.com/jr-k/obscreen/blob/master/docs/screenshot-light-mode.png" width="512" alt="" />
+<img src="https://github.com/obscreen/obscreen/blob/master/docs/screenshot-light-mode.png" width="512" alt="" />
 
 Content Explorer:
 
-<img src="https://github.com/jr-k/obscreen/blob/master/docs/screenshot-content-explorer.png" width="512" alt="" />
+<img src="https://github.com/obscreen/obscreen/blob/master/docs/screenshot-content-explorer.png" width="512" alt="" />
 
 Settings Page:
 
-<img src="https://github.com/jr-k/obscreen/blob/master/docs/screenshot-settings.png" width="512" alt="" />
+<img src="https://github.com/obscreen/obscreen/blob/master/docs/screenshot-settings.png" width="512" alt="" />
 
 Add Content Modal:
 
-<img src="https://github.com/jr-k/obscreen/blob/master/docs/screenshot-add-content.png" width="512" alt="" />
+<img src="https://github.com/obscreen/obscreen/blob/master/docs/screenshot-add-content.png" width="512" alt="" />
 
 ## 🛟 Discussion / Need help ?
 
 ### Join our Discord
-[<img src="https://github.com/jr-k/obscreen/blob/master/docs/img/discord.png" width="64">](https://discord.obscreen.io)
+[<img src="https://github.com/obscreen/obscreen/blob/master/docs/img/discord.png" width="64">](https://discord.obscreen.io)
 
 ### Open an Issue
-[<img src="https://github.com/jr-k/obscreen/blob/master/docs/img/github.png" width="64">](https://github.com/jr-k/obscreen/issues/new/choose)
+[<img src="https://github.com/obscreen/obscreen/blob/master/docs/img/github.png" width="64">](https://github.com/obscreen/obscreen/issues/new/choose)
 
