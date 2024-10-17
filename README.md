@@ -10,6 +10,12 @@ Obscreen is a user-friendly self-hosted digital signage tool leveraging chromium
 
 ---
 
+## 🎅 We're Open to Feature Requests!
+
+We welcome your ideas and feedback! You can submit and track feature requests on our [Feature Base Dashboard](https://obscreen.featurebase.app/en).
+
+---
+
 ## 🌐 Full documentation
 
 - Website [www.obscreen.io](https://www.obscreen.io)
