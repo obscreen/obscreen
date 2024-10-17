@@ -6,13 +6,13 @@
 
 Obscreen is a user-friendly self-hosted digital signage tool leveraging chromium browser. 
 
+<a target="_blank" href="https://github.com/obscreen/obscreen"><img src="https://img.shields.io/github/stars/obscreen/obscreen?style=flat" /></a> <a target="_blank" href="https://hub.docker.com/r/obscreen/obscreen"><img src="https://img.shields.io/docker/pulls/obscreen/obscreen" /></a> <a target="_blank" href="https://hub.docker.com/r/obscreen/obscreen"><img src="https://img.shields.io/docker/v/obscreen/obscreen/latest?label=docker%20image%20ver." /></a> <a target="_blank" href="https://github.com/obscreen/obscreen"><img src="https://img.shields.io/github/last-commit/obscreen/obscreen" /></a> 
+
 <img src="https://github.com/obscreen/obscreen/blob/master/docs/screenshot-playlist-edit.png" width="700" alt="" />
 
----
+🧑‍🎄 We welcome your ideas and feedback! You can submit and track feature requests on our [Feature Base Dashboard](https://obscreen.featurebase.app/en).
 
-## 🎅 We're Open to Feature Requests!
-
-We welcome your ideas and feedback! You can submit and track feature requests on our [Feature Base Dashboard](https://obscreen.featurebase.app/en).
+⭐️ You liked it ? Give this repository a star, it's free :)
 
 ---
 
