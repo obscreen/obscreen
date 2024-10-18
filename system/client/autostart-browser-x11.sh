@@ -47,7 +47,6 @@ chromium-browser \
   --allow-running-insecure-content \
   --remember-cert-error-decisions \
   --noerrdialogs \
-  --single-process \
   --kiosk \
   --user-data-dir=${CHROMIUM_DIRECTORY} \
   --no-sandbox \
