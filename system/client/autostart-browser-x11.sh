@@ -51,7 +51,7 @@ chromium-browser \
   --user-data-dir=${CHROMIUM_DIRECTORY} \
   --no-sandbox \
   --window-position=0,0 \
-  --load-extension=$(pwd)/ext \
+  --load-extension=/home/pi/obscreen/var/run/ext \
   --window-size=${WIDTH},${HEIGHT} \
   --display=:0 \
   ${STUDIO_URL}
