@@ -1,0 +1,29 @@
+{
+    "manifest_version": 3,
+    "name": "Disable CSP and X-Frame-Options",
+    "version": "1.0",
+    "permissions": [
+      "declarativeNetRequest",
+      "declarativeNetRequestWithHostAccess",
+      "tabs",
+      "activeTab",
+      "webRequest",
+      "webRequestBlocking"
+    ],
+    "host_permissions": [
+      "*://*/*"
+    ],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "declarative_net_request": {
+      "rule_resources": [
+        {
+          "id": "ruleset_1",
+          "enabled": true,
+          "path": "rules.json"
+        }
+      ]
+    }
+  }
+  
