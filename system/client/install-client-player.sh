@@ -96,7 +96,7 @@ grep -qxF "allowed_users=anybody" /etc/X11/Xwrapper.config || echo "allowed_user
 grep -qxF "needs_root_rights=yes" /etc/X11/Xwrapper.config || echo "needs_root_rights=yes" | tee -a /etc/X11/Xwrapper.config
 
 # Create the systemd service to start Chromium in kiosk mode
-curl https://raw.githubusercontent.com/jr-k/obscreen/master/system/client/obscreen-player.service  | sed "s#/home/pi#$WORKING_DIR#g" | sed "s#=pi#=$OWNER#g" | tee /etc/systemd/system/obscreen-player.service
+curl https://raw.githubusercontent.com/obscreen/obscreen/master/system/client/obscreen-player.service  | sed "s#/home/pi#$WORKING_DIR#g" | sed "s#=pi#=$OWNER#g" | tee /etc/systemd/system/obscreen-player.service
 
 # Reload systemd, enable and start the service
 systemctl daemon-reload
@@ -108,10 +108,10 @@ systemctl set-default graphical.target
 # ============================================================
 
 mkdir -p "$WORKING_DIR/obscreen/var/run/ext"
-curl https://raw.githubusercontent.com/jr-k/obscreen/master/system/client/autostart-browser-x11.sh  | sed "s#/home/pi#$WORKING_DIR#g" | sed "s#=pi#=$OWNER#g" | sed "s#chromium-browser#$CHROMIUM#g" | sed "s#http://localhost:5000#$obscreen_studio_url#g" | tee "$WORKING_DIR/obscreen/var/run/play"
-curl https://raw.githubusercontent.com/jr-k/obscreen/master/system/client/ext/manifest.json | tee "$WORKING_DIR/obscreen/var/run/ext/manifest.json"
-curl https://raw.githubusercontent.com/jr-k/obscreen/master/system/client/ext/background.js | tee "$WORKING_DIR/obscreen/var/run/ext/background.js"
-curl https://raw.githubusercontent.com/jr-k/obscreen/master/system/client/ext/rules.json | tee "$WORKING_DIR/obscreen/var/run/ext/rules.json"
+curl https://raw.githubusercontent.com/obscreen/obscreen/master/system/client/autostart-browser-x11.sh  | sed "s#/home/pi#$WORKING_DIR#g" | sed "s#=pi#=$OWNER#g" | sed "s#chromium-browser#$CHROMIUM#g" | sed "s#http://localhost:5000#$obscreen_studio_url#g" | tee "$WORKING_DIR/obscreen/var/run/play"
+curl https://raw.githubusercontent.com/obscreen/obscreen/master/system/client/ext/manifest.json | tee "$WORKING_DIR/obscreen/var/run/ext/manifest.json"
+curl https://raw.githubusercontent.com/obscreen/obscreen/master/system/client/ext/background.js | tee "$WORKING_DIR/obscreen/var/run/ext/background.js"
+curl https://raw.githubusercontent.com/obscreen/obscreen/master/system/client/ext/rules.json | tee "$WORKING_DIR/obscreen/var/run/ext/rules.json"
 chmod +x "$WORKING_DIR/obscreen/var/run/play"
 chown -R $OWNER:$OWNER "$WORKING_DIR/obscreen"
 
