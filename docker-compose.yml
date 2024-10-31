@@ -4,11 +4,15 @@ services:
     pull_policy: always
     container_name: obscreen
     restart: always
+#    extra_hosts:
+#      - "host.docker.internal:host-gateway"
     ports:
       - "5000:5000"
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ./obscreen.lic:/app/obscreen.lic
       - ./data:/app/data
+#      - ./license-local.key:/app/license-local.key
     environment:
       DEBUG: "false"
       PORT: 5000
