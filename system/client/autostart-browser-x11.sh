@@ -37,7 +37,7 @@ HEIGHT=$(echo $RESOLUTION | cut -d 'x' -f 2)
 
 # Start Chromium in kiosk mode
 chromium-browser \
-  --disk-cache-size=2147483648 \
+  --disk-cache-size=2147483647 \
   --disable-features=Translate \
   --ignore-certificate-errors \
   --disable-web-security \
