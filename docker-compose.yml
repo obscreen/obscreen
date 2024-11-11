@@ -4,16 +4,12 @@ services:
     pull_policy: always
     container_name: obscreen
     restart: always
-#    extra_hosts:
-#      - "host.docker.internal:host-gateway"
-    ports:
-      - "5000:5000"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ./obscreen.lic:/app/obscreen.lic
       - ./data:/app/data
-#      - ./license-local.key:/app/license-local.key
+#      - ./license-local.key:/app/license-local.key # see more: https://docs.obscreen.io/features/offline.html
+    network_mode: host
     environment:
-      DEBUG: "false"
       PORT: 5000
       SECRET_KEY: ANY_SECRET_KEY_HERE
