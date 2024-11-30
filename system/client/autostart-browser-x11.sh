@@ -51,6 +51,7 @@ chromium-browser \
   --user-data-dir=${CHROMIUM_DIRECTORY} \
   --no-sandbox \
   --window-position=0,0 \
+  --enable-features=OverlayScrollbar,OverlayScrollbarFlashAfterAnyScrollUpdate,OverlayScrollbarFlashWhenMouseEnter \ #Remove scroolbars from the windows therefore making more space in the screen
   --load-extension=/home/pi/obscreen/var/run/ext \
   --window-size=${WIDTH},${HEIGHT} \
   --display=:0 \
