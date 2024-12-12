@@ -13,5 +13,3 @@ services:
     environment:
       PORT: 5000
       SECRET_KEY: ANY_SECRET_KEY_HERE
-    ports:
-      - "5000:5000"
