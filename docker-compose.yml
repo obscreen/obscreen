@@ -6,9 +6,8 @@ services:
     restart: always
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - ./obscreen.lic:/app/obscreen.lic
+      - ./license:/app/license
       - ./data:/app/data
-#      - ./license-local.key:/app/license-local.key # see more: https://docs.obscreen.io/features/offline.html
     network_mode: host
     environment:
       PORT: 5000
