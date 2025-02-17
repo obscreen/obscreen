@@ -10,7 +10,7 @@ Obscreen is a user-friendly self-hosted digital signage tool leveraging chromium
 
 <img src="https://github.com/obscreen/obscreen/blob/master/docs/screenshot-playlist-edit.png" width="700" alt="" />
 
-🧑‍🎄 We welcome your ideas and feedback! You can submit and track feature requests on our [Feature Base Dashboard](https://obscreen.featurebase.app/en).
+🧑‍🎄 We welcome your ideas and feedback! You can submit and track feature requests on our [Public Roadmap](https://github.com/obscreen/roadmap).
 
 ⭐️ You liked it ? Give this repository a star, it's free :)
 
