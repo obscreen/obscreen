@@ -21,14 +21,6 @@ Obscreen is a user-friendly self-hosted digital signage tool leveraging chromium
 - Website [www.obscreen.io](https://www.obscreen.io)
 - Documentation [docs.obscreen.io](https://docs.obscreen.io)
 
-## 🕹️ Live Demo
-
-Try it!
-
-Demo Server (Location: Roubaix - France): [https://demo.obscreen.io](https://demo.obscreen.io/login?username=admin&password=admin)
-
-It is a temporary live demo, all data will be deleted after 30 minutes (~30secs downtime).
-
 ## 🎉 Features
 - Dead simple chromium webview inside
 - Fancy graphical user interface
@@ -38,7 +30,7 @@ It is a temporary live demo, all data will be deleted after 30 minutes (~30secs 
 - Playlist management
 - Authentication management
 - Plays content from flashdrive in offline mode
-- Composition content type [(short video demo)](https://demo.obscreen.io/data/uploads/compositions.mp4)
+- Composition content type
 - Core API & Plugin system to extend capabilities
 - Multi Languages
 - Cast pictures and iframes to Chromecast
