@@ -8,7 +8,7 @@ Obscreen is a user-friendly self-hosted digital signage tool leveraging chromium
 
 <a target="_blank" href="https://github.com/obscreen/obscreen"><img src="https://img.shields.io/github/stars/obscreen/obscreen?style=flat" /></a> <a target="_blank" href="https://hub.docker.com/r/obscreen/obscreen"><img src="https://img.shields.io/docker/pulls/obscreen/obscreen" /></a> <a target="_blank" href="https://hub.docker.com/r/obscreen/obscreen"><img src="https://img.shields.io/docker/v/obscreen/obscreen/latest?label=docker%20image%20ver." /></a> <a target="_blank" href="https://github.com/obscreen/obscreen"><img src="https://img.shields.io/github/last-commit/obscreen/obscreen" /></a> 
 
-<img src="https://github.com/obscreen/obscreen/blob/master/docs/screenshot-playlist-edit.png" width="700" alt="" />
+<img src="https://www.obscreen.io/images/screenshots/hero.png?d=2" width="700" alt="" />
 
 🧑‍🎄 We welcome your ideas and feedback! You can submit and track feature requests on our [Public Roadmap](https://github.com/orgs/obscreen/projects/3/views/7).
 
@@ -34,24 +34,7 @@ Obscreen is a user-friendly self-hosted digital signage tool leveraging chromium
 - Core API & Plugin system to extend capabilities
 - Multi Languages
 - Cast pictures and iframes to Chromecast
-
-## 📸 More Screenshots
-
-Light Mode:
-
-<img src="https://github.com/obscreen/obscreen/blob/master/docs/screenshot-light-mode.png" width="512" alt="" />
-
-Content Explorer:
-
-<img src="https://github.com/obscreen/obscreen/blob/master/docs/screenshot-content-explorer.png" width="512" alt="" />
-
-Settings Page:
-
-<img src="https://github.com/obscreen/obscreen/blob/master/docs/screenshot-settings.png" width="512" alt="" />
-
-Add Content Modal:
-
-<img src="https://github.com/obscreen/obscreen/blob/master/docs/screenshot-add-content.png" width="512" alt="" />
+- More...
 
 ## 🛟 Discussion / Need help ?
 
