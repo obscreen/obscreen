@@ -8,6 +8,26 @@ SCREEN_RESOLUTION=auto
 ## Values are either: normal (0°), right (90°), inverted (180°), left (270°)
 SCREEN_ROTATE=normal
 
+# Client metadata
+## Network
+CLIENT_HOSTNAME=
+## Icon
+CLIENT_ICON=auto # any font-awesome icon name (i.e. fa-desktop, fa-laptop, fa-tablet, fa-mobile, fa-tablet-alt, fa-mobile-alt)
+## Positioning
+### 1. Precise positioning
+CLIENT_LONGITUDE=
+CLIENT_LATITUDE=
+### 2. Structured address-based positioning
+CLIENT_STREET=
+CLIENT_CITY=
+CLIENT_STATE=
+CLIENT_COUNTRY=
+CLIENT_POSTAL_CODE=
+### 3. Query address-based positioning (i.e. "1600 Pennsylvania Avenue NW, Washington, DC 20500")
+CLIENT_ADDRESS_QUERY=
+
+# ================================================================================================================================================
+
 # Disable screensaver and DPMS
 xset s off
 xset -dpms
@@ -34,6 +54,30 @@ xrandr --output $FIRST_CONNECTED_SCREEN --rotate $SCREEN_ROTATE
 RESOLUTION=$(DISPLAY=:0 xrandr | grep '*' | awk '{print $1}')
 WIDTH=$(echo $RESOLUTION | cut -d 'x' -f 1)
 HEIGHT=$(echo $RESOLUTION | cut -d 'x' -f 2)
+
+# Build the URL with client parameters
+### Dynamically append all CLIENT_ parameters to URL when not empty
+STUDIO_URL="${STUDIO_URL}?"
+for var in $(compgen -v | grep "^CLIENT_"); do
+    # Get the parameter name by removing CLIENT_ prefix and converting to lowercase
+    param=$(echo ${var#CLIENT_} | tr '[:upper:]' '[:lower:]')
+    value=${!var}
+    
+    # Skip empty values and "auto" for icon
+    if [ ! -z "$value" ] && [ "$value" != "auto" ]; then
+        STUDIO_URL="${STUDIO_URL}${param}=${value}&"
+    fi
+done
+for var in $(compgen -v | grep "^SCREEN_"); do
+    param=$(echo ${var#SCREEN_} | tr '[:upper:]' '[:lower:]')
+    value=${!var}
+    if [ ! -z "$value" ] && [ "$value" != "auto" ]; then
+        STUDIO_URL="${STUDIO_URL}${param}=${value}&"
+    fi
+done
+# Remove trailing '&' or '?' if present
+STUDIO_URL=$(echo $STUDIO_URL | sed 's/[?&]$//')
+###
 
 # Start Chromium in kiosk mode
 chromium-browser \
