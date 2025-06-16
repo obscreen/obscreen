@@ -14,6 +14,12 @@ echo "# ==============================="
 # ============================================================
 
 default_studio_url="http://localhost:5000"
+
+# Use STUDIO_URL from env var if set, otherwise fallback to default
+if [ -n "$STUDIO_URL" ]; then
+    default_studio_url="$STUDIO_URL"
+fi
+
 obscreen_studio_url=$default_studio_url
 disable_interaction=false
 
