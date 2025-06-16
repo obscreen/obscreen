@@ -2,6 +2,7 @@
 
 OWNER=${1:-$USER}
 WORKING_DIR=${2:-$HOME}
+STUDIO_URL_ARG=${3:-}
 
 echo "# ==============================="
 echo "# Installing Obscreen Player"
@@ -15,9 +16,9 @@ echo "# ==============================="
 
 default_studio_url="http://localhost:5000"
 
-# Use STUDIO_URL from env var if set, otherwise fallback to default
-if [ -n "$STUDIO_URL" ]; then
-    default_studio_url="$STUDIO_URL"
+# Use 3rd argument as studio URL if provided, otherwise fallback to default
+if [ -n "$STUDIO_URL_ARG" ]; then
+    default_studio_url="$STUDIO_URL_ARG"
 fi
 
 obscreen_studio_url=$default_studio_url
