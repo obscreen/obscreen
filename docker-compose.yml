@@ -8,6 +8,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - ./license:/app/license
       - ./data:/app/data
+      # Uncomment next line if you want one-click button update on GUI
+      #- /var/run/docker.sock:/var/run/docker.sock
     network_mode: host
     environment:
       PORT: 5000
