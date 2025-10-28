@@ -103,27 +103,7 @@ grep -qxF "allowed_users=anybody" /etc/X11/Xwrapper.config || echo "allowed_user
 grep -qxF "needs_root_rights=yes" /etc/X11/Xwrapper.config || echo "needs_root_rights=yes" | tee -a /etc/X11/Xwrapper.config
 bash -c "cat > /etc/X11/xorg.conf.d/99-pi-video.conf" <<EOF
 Section "Device"
-    Identifier "Raspberry Pi 5"
-    Driver "modesetting"
-    Option "AccelMethod" "glamor"
-    Option "DRI" "3"
-EndSection
-
-Section "OutputClass"
-    Identifier "vc4"
-    MatchDriver "vc4"
-    Driver "modesetting"
-    Option "PrimaryGPU" "true"
-EndSection
-
-Section "ServerFlags"
-    Option "BlankTime" "0"
-    Option "StandbyTime" "0"
-    Option "SuspendTime" "0"
-    Option "OffTime" "0"
-EndSection
-Section "Device"
-    Identifier "Raspberry Pi 5"
+    Identifier "Raspberry Pi"
     Driver "modesetting"
     Option "AccelMethod" "glamor"
     Option "DRI" "3"
