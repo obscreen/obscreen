@@ -95,12 +95,55 @@ apt install -y xinit xserver-xorg x11-xserver-utils unclutter pulseaudio
 # ------------------
 
 # Add user to tty, video groups
-usermod -aG tty,video $OWNER
+usermod -aG tty,video,audio $OWNER
 
-# Configure Xwrapper
+# Configure X11
 touch /etc/X11/Xwrapper.config
 grep -qxF "allowed_users=anybody" /etc/X11/Xwrapper.config || echo "allowed_users=anybody" | tee -a /etc/X11/Xwrapper.config
 grep -qxF "needs_root_rights=yes" /etc/X11/Xwrapper.config || echo "needs_root_rights=yes" | tee -a /etc/X11/Xwrapper.config
+bash -c "cat > /etc/X11/xorg.conf.d/99-pi-video.conf" <<EOF
+Section "Device"
+    Identifier "Raspberry Pi 5"
+    Driver "modesetting"
+    Option "AccelMethod" "glamor"
+    Option "DRI" "3"
+EndSection
+
+Section "OutputClass"
+    Identifier "vc4"
+    MatchDriver "vc4"
+    Driver "modesetting"
+    Option "PrimaryGPU" "true"
+EndSection
+
+Section "ServerFlags"
+    Option "BlankTime" "0"
+    Option "StandbyTime" "0"
+    Option "SuspendTime" "0"
+    Option "OffTime" "0"
+EndSection
+Section "Device"
+    Identifier "Raspberry Pi 5"
+    Driver "modesetting"
+    Option "AccelMethod" "glamor"
+    Option "DRI" "3"
+EndSection
+
+Section "OutputClass"
+    Identifier "vc4"
+    MatchDriver "vc4"
+    Driver "modesetting"
+    Option "PrimaryGPU" "true"
+EndSection
+
+Section "ServerFlags"
+    Option "BlankTime" "0"
+    Option "StandbyTime" "0"
+    Option "SuspendTime" "0"
+    Option "OffTime" "0"
+EndSection
+EOF
+
 
 # Create the systemd service to start Chromium in kiosk mode
 curl https://raw.githubusercontent.com/obscreen/obscreen/master/system/client/obscreen-player.service  | sed "s#/home/pi#$WORKING_DIR#g" | sed "s#=pi#=$OWNER#g" | tee /etc/systemd/system/obscreen-player.service
