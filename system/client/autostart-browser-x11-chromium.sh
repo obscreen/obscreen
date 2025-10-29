@@ -42,6 +42,9 @@ mkdir -p $CHROMIUM_DIRECTORY/Default 2>/dev/null
 touch /$CHROMIUM_DIRECTORY/Default/Preferences
 sed -i 's/"exited_cleanly": false/"exited_cleanly": true/' $CHROMIUM_DIRECTORY/Default/Preferences
 
+CHROMIUM_EXT_DIR="/home/pi/obscreen/var/run/ext/chromium"
+mkdir -p "$CHROMIUM_EXT_DIR" 2>/dev/null
+
 FIRST_CONNECTED_SCREEN=$(xrandr | grep " connected" | awk '{print $1}' | head -n 1)
 
 # Resolution setup
@@ -79,8 +82,20 @@ done
 STUDIO_URL=$(echo $STUDIO_URL | sed 's/[?&]$//')
 ###
 
+# Detect chromium binary
+CHROMIUM_BIN=""
+if command -v chromium-browser >/dev/null 2>&1; then
+  CHROMIUM_BIN="chromium-browser"
+elif command -v chromium >/dev/null 2>&1; then
+  CHROMIUM_BIN="chromium"
+else
+  echo "Chromium binary not found." >&2
+  echo "Please install chromium-browser or chromium." >&2
+  exit 1
+fi
+
 # Start Chromium in kiosk mode
-chromium-browser \
+"$CHROMIUM_BIN" \
   --disk-cache-size=2147483647 \
   --disable-features=Translate \
   --ignore-certificate-errors \
@@ -95,7 +110,7 @@ chromium-browser \
   --user-data-dir=${CHROMIUM_DIRECTORY} \
   --no-sandbox \
   --window-position=0,0 \
-  --load-extension=/home/pi/obscreen/var/run/ext \
+  --load-extension=$CHROMIUM_EXT_DIR \
   --window-size=${WIDTH},${HEIGHT} \
   --display=:0 \
   ${STUDIO_URL}
