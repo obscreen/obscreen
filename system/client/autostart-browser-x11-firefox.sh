@@ -4,16 +4,24 @@
 # Configuration
 # ============================================================================================================
 
-# Enable or disable "touch only" mode for touchscreen displays (true / false)
-TOUCH_ONLY=false
-
-## Main Obscreen Studio instance URL (could be a specific playlist /use/[playlist-id] or let obscreen manage playlist routing with /)
+#------------------------------------------------------------------------------------------------------------
+# Main Obscreen Studio instance URL (could be a specific playlist /use/[playlist-id] or let obscreen manage playlist routing with /)
 STUDIO_URL=http://localhost:5000
 ## e.g. 1920x1080 - Force specific resolution (supported list available with command `DISPLAY=:0 xrandr`)
 SCREEN_RESOLUTION=auto
 ## Values are either: normal (0°), right (90°), inverted (180°), left (270°)
 SCREEN_ROTATE=normal
+## Hide mouse cursor
+MOUSE_CURSOR_HIDDEN=true
 
+#------------------------------------------------------------------------------------------------------------
+# Touchscreen options
+## Enable touchscreen gestures
+TOUCH_ENABLED=true
+## Disable Pinch gesture detection
+TOUCH_PINCH_DISABLED=true
+
+#------------------------------------------------------------------------------------------------------------
 # Client metadata
 ## Network
 CLIENT_HOSTNAME=
@@ -33,32 +41,65 @@ CLIENT_POSTAL_CODE=
 CLIENT_ADDRESS_QUERY=
 
 # ============================================================================================================
-# Environment setup
+# Screen setup
 # ============================================================================================================
+export DISPLAY=:0
 
-# Disable screensaver and DPMS
-xset s off
-xset -dpms
-xset s noblank
+xset s off # Disable screensaver
+xset -dpms # Disable DPMS (Display Power Management Signaling)
+xset s noblank # Disable blanking
 
-# Start unclutter to hide the mouse cursor
-unclutter -display :0 -noevents -grab &
-
-# If TOUCH_ONLY = true, disable all pointer like mouse, touchpad, trackpad.
-# This prevents the first tap from only moving the pointer and makes touch interactions direct.
-if [ "$TOUCH_ONLY" = true ]; then
-    echo "TOUCH_ONLY mode enabled: disabling pointer devices..."
-    TO_DISABLE=$(xinput list --name-only | grep -i 'mouse\|pointer\|trackpad\|touchpad')
-    for dev in $TO_DISABLE; do
-        echo "  -> Disabling $dev"
-        xinput disable "$dev"
-    done
+# Start unclutter to hide the mouse cursor (even if mouse is still enabled)
+if [ "$MOUSE_CURSOR_HIDDEN" = true ]; then
+    if unclutter -v 2>&1 | grep -q "unclutter-xfixes"; then
+        unclutter --hide-on-touch --hide-on-key-press --start-hidden --fork &
+    else
+        unclutter -display :0 -noevents -grab -idle 0  &
+    fi
 fi
 
-# ============================================================================================================
-# Firefox profile directory and preferences
-# ============================================================================================================
+FIRST_CONNECTED_SCREEN=$(xrandr | grep " connected" | awk '{print $1}' | head -n 1)
 
+# Resolution setup
+if [ "$SCREEN_RESOLUTION" != "auto" ]; then
+    xrandr --output $FIRST_CONNECTED_SCREEN --mode $SCREEN_RESOLUTION
+fi
+
+xrandr --output $FIRST_CONNECTED_SCREEN --rotate $SCREEN_ROTATE
+
+RESOLUTION=$(DISPLAY=:0 xrandr | grep '*' | awk '{print $1}')
+WIDTH=$(echo $RESOLUTION | cut -d 'x' -f 1)
+HEIGHT=$(echo $RESOLUTION | cut -d 'x' -f 2)
+
+# Build the URL with client parameters
+### Dynamically append all CLIENT_ parameters to URL when not empty
+STUDIO_URL="${STUDIO_URL}?"
+for var in $(compgen -v | grep "^CLIENT_"); do
+    # Get the parameter name by removing CLIENT_ prefix and converting to lowercase
+    param=$(echo ${var#CLIENT_} | tr '[:upper:]' '[:lower:]')
+    value=${!var}
+    
+    # Skip empty values and "auto" for icon
+    if [ ! -z "$value" ] && [ "$value" != "auto" ]; then
+        STUDIO_URL="${STUDIO_URL}${param}=${value}&"
+    fi
+done
+for var in $(compgen -v | grep "^SCREEN_"); do
+    param=$(echo ${var#SCREEN_} | tr '[:upper:]' '[:lower:]')
+    value=${!var}
+    if [ ! -z "$value" ] && [ "$value" != "auto" ]; then
+        STUDIO_URL="${STUDIO_URL}${param}=${value}&"
+    fi
+done
+# Remove trailing '&' or '?' if present
+STUDIO_URL=$(echo $STUDIO_URL | sed 's/[?&]$//')
+###
+
+#------------------------------------------------------------------------------------------------------------
+# Browser setup
+#------------------------------------------------------------------------------------------------------------
+
+# Firefox profile directory and preferences
 FIREFOX_PROFILE_DIR=$HOME/.config/obscreen-firefox
 mkdir -p "$FIREFOX_PROFILE_DIR" 2>/dev/null
 USER_JS="$FIREFOX_PROFILE_DIR/user.js"
@@ -121,43 +162,6 @@ FIREFOX_EXT_DIR="$FIREFOX_PROFILE_DIR/extensions"
 mkdir -p "$FIREFOX_EXT_DIR" 2>/dev/null
 cp -f "$FIREFOX_EXT_FILE" "$FIREFOX_EXT_DIR/{a6afa2be-9b78-4dba-9dda-d89e52b13b7d}.xpi" 2>/dev/null
 
-FIRST_CONNECTED_SCREEN=$(xrandr | grep " connected" | awk '{print $1}' | head -n 1)
-
-# Resolution setup
-if [ "$SCREEN_RESOLUTION" != "auto" ]; then
-    xrandr --output $FIRST_CONNECTED_SCREEN --mode $SCREEN_RESOLUTION
-fi
-
-xrandr --output $FIRST_CONNECTED_SCREEN --rotate $SCREEN_ROTATE
-
-RESOLUTION=$(DISPLAY=:0 xrandr | grep '*' | awk '{print $1}')
-WIDTH=$(echo $RESOLUTION | cut -d 'x' -f 1)
-HEIGHT=$(echo $RESOLUTION | cut -d 'x' -f 2)
-
-# Build the URL with client parameters
-### Dynamically append all CLIENT_ parameters to URL when not empty
-STUDIO_URL="${STUDIO_URL}?"
-for var in $(compgen -v | grep "^CLIENT_"); do
-    # Get the parameter name by removing CLIENT_ prefix and converting to lowercase
-    param=$(echo ${var#CLIENT_} | tr '[:upper:]' '[:lower:]')
-    value=${!var}
-    
-    # Skip empty values and "auto" for icon
-    if [ ! -z "$value" ] && [ "$value" != "auto" ]; then
-        STUDIO_URL="${STUDIO_URL}${param}=${value}&"
-    fi
-done
-for var in $(compgen -v | grep "^SCREEN_"); do
-    param=$(echo ${var#SCREEN_} | tr '[:upper:]' '[:lower:]')
-    value=${!var}
-    if [ ! -z "$value" ] && [ "$value" != "auto" ]; then
-        STUDIO_URL="${STUDIO_URL}${param}=${value}&"
-    fi
-done
-# Remove trailing '&' or '?' if present
-STUDIO_URL=$(echo $STUDIO_URL | sed 's/[?&]$//')
-###
-
 # Detect firefox binary
 FIREFOX_BIN=""
 if command -v firefox-devedition >/dev/null 2>&1; then
@@ -170,7 +174,9 @@ else
   exit 1
 fi
 
+# ============================================================================================================
 # Start Firefox in kiosk mode
+# ============================================================================================================
 "$FIREFOX_BIN" \
   --no-remote \
   --kiosk \
