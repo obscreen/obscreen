@@ -6,7 +6,7 @@
 
 #------------------------------------------------------------------------------------------------------------
 # Main Obscreen Studio instance URL (could be a specific playlist /use/[playlist-id] or let obscreen manage playlist routing with /)
-STUDIO_URL=http://192.168.1.198:5002
+STUDIO_URL=http://localhost:5000
 ## e.g. 1920x1080 - Force specific resolution (supported list available with command `DISPLAY=:0 xrandr`)
 SCREEN_RESOLUTION=auto
 ## Values are either: normal (0°), right (90°), inverted (180°), left (270°)
@@ -152,10 +152,45 @@ user_pref("extensions.logging.enabled", true);
 user_pref("browser.rights.3.shown", true);
 user_pref("rkiosk.navbar", false);
 user_pref("browser.fullscreen.autohide", true);
+user_pref("signon.rememberSignons", false);
+user_pref("signon.autofillForms", false);
+user_pref("signon.autofillForms.http", false);
+user_pref("signon.formlessCapture.enabled", false);
+user_pref("signon.storeWhenAutocompleteOff", false);
+user_pref("signon.management.page.enabled", false);
 user_pref("zoom.minPercent", 100);
 user_pref("zoom.maxPercent", 100);
 user_pref("zoom.defaultPercent", 100);
 EOF
+
+if [ "$TOUCH_ENABLED" = true ]; then
+  export MOZ_USE_XINPUT2=1
+  cat >> "$USER_JS" <<'EOF'
+user_pref("dom.w3c.touch_events.enabled", 1);
+user_pref("dom.w3c.touch_events.additionalTypes.enabled", true);
+user_pref("apz.touch_action.enabled", true);
+user_pref("apz.overscroll.enabled", true);
+user_pref("apz.fling_curve_function_y2", "0");
+user_pref("apz.fling_stop_on_tap_threshold", "0.0");
+user_pref("widget.gtk.overlay-scrollbars.enabled", true);
+user_pref("toolkit.scrollbox.smoothScroll", true);
+user_pref("general.smoothScroll", true);
+user_pref("general.smoothScroll.mouseWheel", true);
+user_pref("mousewheel.min_line_scroll_amount", 5);
+EOF
+fi
+
+if [ "$TOUCH_PINCH_DISABLED" = true ]; then
+  cat >> "$USER_JS" <<'EOF'
+user_pref("apz.allow_zooming", false);
+user_pref("apz.pinch_lock.scale-lock-mode", 1);
+user_pref("dom.meta-viewport.enabled", false);
+EOF
+else 
+  cat >> "$USER_JS" <<'EOF'
+user_pref("apz.allow_zooming", true);
+EOF
+fi
 
 # Ensure extensions directory exists and install extension if it exists
 FIREFOX_EXT_FILE="/home/pi/obscreen/var/run/ext/firefox/ext.xpi"
@@ -203,9 +238,11 @@ else
   exit 1
 fi
 
+
 # ============================================================================================================
 # Start Firefox in kiosk mode
 # ============================================================================================================
+
 "$FIREFOX_BIN" \
   --no-remote \
   --profile "$FIREFOX_PROFILE_DIR" \
