@@ -175,7 +175,7 @@ apt install $APT_CONFIRM xinit xserver-xorg x11-xserver-utils xinput unclutter p
 # ------------------
 
 # Add user to tty, video groups
-usermod -aG tty,video,audio $OWNER
+usermod -aG tty,video,audio,render $OWNER
 
 # Configure X11
 touch /etc/X11/Xwrapper.config
