@@ -156,6 +156,18 @@ if [ "$PLAYER_BROWSER" = "chromium" ]; then
     fi
   fi
 else
+  wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- | gpg --dearmor | tee /etc/apt/trusted.gpg.d/packages.mozilla.org.gpg > /dev/null
+  gpg --quiet --no-default-keyring --keyring /etc/apt/trusted.gpg.d/packages.mozilla.org.gpg --fingerprint | awk '/pub/{getline; gsub(/^ +| +$/,""); print "\n"$0"\n"}'
+  bash -c "cat > /etc/apt/sources.list.d/mozilla.list" <<EOF
+deb [signed-by=/etc/apt/trusted.gpg.d/packages.mozilla.org.gpg] https://packages.mozilla.org/apt mozilla main
+EOF
+  if ! apt update -y; then
+    echo "apt update failed, reverting Mozilla repository changes..."
+    rm -f /etc/apt/sources.list.d/mozilla.list
+    rm -f /etc/apt/trusted.gpg.d/packages.mozilla.org.gpg
+    apt update -y
+  fi
+    
   # Detect firefox binary
   if command -v firefox-devedition >/dev/null 2>&1; then
     FIREFOX="firefox-devedition"
@@ -164,7 +176,9 @@ else
   else
     # Attempt to install firefox variants
     if sudo apt-get install $APT_CONFIRM firefox-devedition; then
-      FIREFOX="firefox"
+      FIREFOX="firefox-devedition"
+    elif sudo apt-get install $APT_CONFIRM firefox-esr; then
+      FIREFOX="firefox-esr"
     else
       if sudo apt-get install $APT_CONFIRM firefox; then
         FIREFOX="firefox"
@@ -181,7 +195,15 @@ fi
 # ------------------
 # Remaining packages
 # ------------------
-apt install $APT_CONFIRM xinit xserver-xorg x11-xserver-utils xinput unclutter pulseaudio
+apt install $APT_CONFIRM xinit xserver-xorg x11-xserver-utils xinput unclutter pulseaudio git
+
+# Install unclutter-xfixes
+if apt install $APT_CONFIRM libev-dev libx11-dev libxi-dev; then
+  git clone https://github.com/obscreen/unclutter-xfixes.git /tmp/unclutter-xfixes
+  cd /tmp/unclutter-xfixes
+  make
+  make install
+fi
 
 # ------------------
 # Configuration
@@ -252,6 +274,7 @@ systemctl restart obscreen-player.service
 # ============================================================
 
 mkdir -p "$WORKING_DIR/obscreen/var/run"
+cd $WORKING_DIR
 
 if [ "$PLAYER_BROWSER" = "chromium" ]; then
   mkdir -p "$WORKING_DIR/obscreen/var/run/ext/chromium" 2>/dev/null
