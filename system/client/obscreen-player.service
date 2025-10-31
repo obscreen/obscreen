@@ -4,9 +4,7 @@ After=network.target
 
 [Service]
 Type=simple
-User=pi
-Group=pi
-ExecStart=/usr/bin/xinit /home/pi/obscreen/var/run/play -- :0 -nolisten tcp vt7 -keeptty
+ExecStart=/usr/bin/xinit /bin/su - pi -c '/home/pi/obscreen/var/run/play' -- :0 -nolisten tcp vt7 -keeptty
 Restart=on-failure
 Environment=DISPLAY=:0
 
