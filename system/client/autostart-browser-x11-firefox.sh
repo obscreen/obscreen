@@ -6,7 +6,7 @@
 
 #------------------------------------------------------------------------------------------------------------
 # Main Obscreen Studio instance URL (could be a specific playlist /use/[playlist-id] or let obscreen manage playlist routing with /)
-STUDIO_URL=http://localhost:5000
+STUDIO_URL=http://192.168.1.198:5002
 ## e.g. 1920x1080 - Force specific resolution (supported list available with command `DISPLAY=:0 xrandr`)
 SCREEN_RESOLUTION=auto
 ## Values are either: normal (0°), right (90°), inverted (180°), left (270°)
@@ -101,6 +101,7 @@ STUDIO_URL=$(echo $STUDIO_URL | sed 's/[?&]$//')
 
 # Firefox profile directory and preferences
 FIREFOX_PROFILE_DIR=$HOME/.config/obscreen-firefox
+rm -rf "$FIREFOX_PROFILE_DIR" 2>/dev/null
 mkdir -p "$FIREFOX_PROFILE_DIR" 2>/dev/null
 USER_JS="$FIREFOX_PROFILE_DIR/user.js"
 
@@ -162,6 +163,32 @@ FIREFOX_EXT_DIR="$FIREFOX_PROFILE_DIR/extensions"
 mkdir -p "$FIREFOX_EXT_DIR" 2>/dev/null
 cp -f "$FIREFOX_EXT_FILE" "$FIREFOX_EXT_DIR/{a6afa2be-9b78-4dba-9dda-d89e52b13b7d}.xpi" 2>/dev/null
 
+# Create Chrome directory and userChrome.css to hide all bars
+FIREFOX_CHROME_DIR="$FIREFOX_PROFILE_DIR/chrome"
+mkdir -p "$FIREFOX_CHROME_DIR" 2>/dev/null
+USERCHROME_CSS="$FIREFOX_CHROME_DIR/userChrome.css"
+cat > "$USERCHROME_CSS" <<'EOF'
+/* Hide all UI bars in kiosk mode */
+#navigator-toolbox {
+  visibility: collapse !important;
+}
+#toolbar-menubar {
+  display: none !important;
+}
+#nav-bar {
+  display: none !important;
+}
+#TabsToolbar {
+  display: none !important;
+}
+#PersonalToolbar {
+  display: none !important;
+}
+#statusbar {
+  display: none !important;
+}
+EOF
+
 # Detect firefox binary
 FIREFOX_BIN=""
 if command -v firefox-devedition >/dev/null 2>&1; then
@@ -172,7 +199,7 @@ elif command -v firefox >/dev/null 2>&1; then
   FIREFOX_BIN="firefox"
 else
   echo "Firefox binary not found." >&2
-  echo "Please install firefox-devedition or firefox." >&2
+  echo "Please install firefox-devedition, firefox-esr or firefox." >&2
   exit 1
 fi
 
@@ -181,8 +208,10 @@ fi
 # ============================================================================================================
 "$FIREFOX_BIN" \
   --no-remote \
-  --kiosk \
   --profile "$FIREFOX_PROFILE_DIR" \
   --width ${WIDTH} \
   --height ${HEIGHT} \
+  --kiosk \
+  --new-window \
   ${STUDIO_URL}
+
