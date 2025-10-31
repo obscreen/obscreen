@@ -166,6 +166,8 @@ cp -f "$FIREFOX_EXT_FILE" "$FIREFOX_EXT_DIR/{a6afa2be-9b78-4dba-9dda-d89e52b13b7
 FIREFOX_BIN=""
 if command -v firefox-devedition >/dev/null 2>&1; then
   FIREFOX_BIN="firefox-devedition"
+elif command -v firefox-esr >/dev/null 2>&1; then
+  FIREFOX_BIN="firefox-esr"
 elif command -v firefox >/dev/null 2>&1; then
   FIREFOX_BIN="firefox"
 else
