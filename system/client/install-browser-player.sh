@@ -202,7 +202,7 @@ mkdir -p "$WORKING_DIR/obscreen/var/run"
 
 if [ "$PLAYER_BROWSER" = "chromium" ]; then
   mkdir -p "$WORKING_DIR/obscreen/var/run/ext/chromium" 2>/dev/null
-  curl https://raw.githubusercontent.com/obscreen/obscreen/master/system/client/autostart-browser-chromium-x11.sh  | sed "s#/home/pi#$WORKING_DIR#g" | sed "s#=pi#=$OWNER#g" | sed "s#chromium-browser#$CHROMIUM#g" | sed "s#http://localhost:5000#$obscreen_studio_url#g" | tee "$WORKING_DIR/obscreen/var/run/play"
+  curl https://raw.githubusercontent.com/obscreen/obscreen/master/system/client/autostart-browser-x11-chromium.sh  | sed "s#/home/pi#$WORKING_DIR#g" | sed "s#=pi#=$OWNER#g" | sed "s#chromium-browser#$CHROMIUM#g" | sed "s#http://localhost:5000#$obscreen_studio_url#g" | tee "$WORKING_DIR/obscreen/var/run/play"
   curl https://raw.githubusercontent.com/obscreen/obscreen/master/extensions/chromium/ext/manifest.json | tee "$WORKING_DIR/obscreen/var/run/ext/chromium/manifest.json"
   curl https://raw.githubusercontent.com/obscreen/obscreen/master/extensions/chromium/ext/background.js | tee "$WORKING_DIR/obscreen/var/run/ext/chromium/background.js"
   curl https://raw.githubusercontent.com/obscreen/obscreen/master/extensions/chromium/ext/rules.json | tee "$WORKING_DIR/obscreen/var/run/ext/chromium/rules.json"
