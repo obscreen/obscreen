@@ -4,16 +4,24 @@
 # Configuration
 # ============================================================================================================
 
-# Enable or disable "touch only" mode for touchscreen displays (true / false)
-TOUCH_ONLY=false
-
+#------------------------------------------------------------------------------------------------------------
 # Main Obscreen Studio instance URL (could be a specific playlist /use/[playlist-id] or let obscreen manage playlist routing with /)
 STUDIO_URL=http://localhost:5000
 ## e.g. 1920x1080 - Force specific resolution (supported list available with command `DISPLAY=:0 xrandr`)
 SCREEN_RESOLUTION=auto
 ## Values are either: normal (0°), right (90°), inverted (180°), left (270°)
 SCREEN_ROTATE=normal
+## Hide mouse cursor
+MOUSE_CURSOR_HIDDEN=true
 
+#------------------------------------------------------------------------------------------------------------
+# Touchscreen options
+## Enable touchscreen gestures
+TOUCH_ENABLED=true
+## Disable Pinch gesture detection
+TOUCH_PINCH_DISABLED=true
+
+#------------------------------------------------------------------------------------------------------------
 # Client metadata
 ## Network
 CLIENT_HOSTNAME=
@@ -33,35 +41,22 @@ CLIENT_POSTAL_CODE=
 CLIENT_ADDRESS_QUERY=
 
 # ============================================================================================================
-# Environment setup
+# Screen setup
 # ============================================================================================================
+export DISPLAY=:0
 
-# Disable screensaver and DPMS (Display Power Management Signaling)
-xset s off
-xset -dpms
-xset s noblank
+xset s off # Disable screensaver
+xset -dpms # Disable DPMS (Display Power Management Signaling)
+xset s noblank # Disable blanking
 
 # Start unclutter to hide the mouse cursor (even if mouse is still enabled)
-unclutter -display :0 -noevents -grab &
-
-# If TOUCH_ONLY = true, disable all pointer devices except the touchscreen
-if [ "$TOUCH_ONLY" = true ]; then
-    echo "TOUCH_ONLY mode enabled: disabling pointer devices..."
-    TO_DISABLE=$(xinput list --name-only | grep -i 'mouse\|pointer\|trackpad\|touchpad')
-    for dev in $TO_DISABLE; do
-        echo "  -> Disabling $dev"
-        xinput disable "$dev"
-    done
+if [ "$MOUSE_CURSOR_HIDDEN" = true ]; then
+    if unclutter -v 2>&1 | grep -q "unclutter-xfixes"; then
+        unclutter --hide-on-touch --hide-on-key-press --start-hidden --fork &
+    else
+        unclutter -display :0 -noevents -grab -idle 0  &
+    fi
 fi
-
-# Modify Chromium preferences to avoid restore messages
-CHROMIUM_DIRECTORY=$HOME/.config/chromium
-mkdir -p $CHROMIUM_DIRECTORY/Default 2>/dev/null
-touch $CHROMIUM_DIRECTORY/Default/Preferences
-sed -i 's/"exited_cleanly": false/"exited_cleanly": true/' $CHROMIUM_DIRECTORY/Default/Preferences
-
-CHROMIUM_EXT_DIR="/home/pi/obscreen/var/run/ext/chromium"
-mkdir -p "$CHROMIUM_EXT_DIR" 2>/dev/null
 
 FIRST_CONNECTED_SCREEN=$(xrandr | grep " connected" | awk '{print $1}' | head -n 1)
 
@@ -100,6 +95,18 @@ done
 STUDIO_URL=$(echo $STUDIO_URL | sed 's/[?&]$//')
 ###
 
+#------------------------------------------------------------------------------------------------------------
+# Browser setup
+#------------------------------------------------------------------------------------------------------------
+# Modify Chromium preferences to avoid restore messages
+CHROMIUM_DIRECTORY=$HOME/.config/chromium
+mkdir -p $CHROMIUM_DIRECTORY/Default 2>/dev/null
+touch $CHROMIUM_DIRECTORY/Default/Preferences
+sed -i 's/"exited_cleanly": false/"exited_cleanly": true/' $CHROMIUM_DIRECTORY/Default/Preferences
+
+CHROMIUM_EXT_DIR="/home/pi/obscreen/var/run/ext/chromium"
+mkdir -p "$CHROMIUM_EXT_DIR" 2>/dev/null
+
 # Detect chromium binary
 CHROMIUM_BIN=""
 if command -v chromium-browser >/dev/null 2>&1; then
@@ -134,5 +141,6 @@ fi
   --load-extension=$CHROMIUM_EXT_DIR \
   --window-size=${WIDTH},${HEIGHT} \
   --display=:0 \
-  $( [ "$TOUCH_ONLY" = true ] && echo "--touch-events=enabled --enable-features=TouchpadAndTouchscreen --overscroll-history-navigation=0" ) \
+  $( [ "$TOUCH_ENABLED" = true ] && echo "--touch-events=enabled" ) \
+  $( [ "$TOUCH_PINCH_DISABLED" = true ] && echo "--disable-pinch" ) \
   ${STUDIO_URL}
