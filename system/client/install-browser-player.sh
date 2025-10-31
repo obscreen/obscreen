@@ -98,7 +98,6 @@ else
     echo "Using player browser: $PLAYER_BROWSER"
 fi
 
-
 # ============================================================
 # Installation
 # ============================================================
@@ -107,8 +106,14 @@ echo ""
 echo "# Waiting 3 seconds before installation..."
 sleep 3
 
+# Set apt confirmation flag for non-interactive installs
+APT_CONFIRM=
+if [ "$disable_interaction" = true ]; then
+    APT_CONFIRM="-y"
+fi
+
 # Update and install necessary packages
-apt update
+apt update $APT_CONFIRM
 
 # ------------------
 # Browser package(s)
@@ -117,39 +122,53 @@ CHROMIUM=""
 FIREFOX=""
 
 if [ "$PLAYER_BROWSER" = "chromium" ]; then
-  # Attempt to install chromium-browser
-  if sudo apt-get install -y chromium-browser; then
+  # Detect chromium binary
+  if command -v chromium-browser >/dev/null 2>&1; then
     CHROMIUM="chromium-browser"
+  elif command -v chromium >/dev/null 2>&1; then
+    CHROMIUM="chromium"
   else
-    if sudo apt-get install -y chromium; then
-      CHROMIUM="chromium"
+    # Attempt to install chromium-browser
+    if sudo apt-get install $APT_CONFIRM chromium-browser; then
+      CHROMIUM="chromium-browser"
+    else
+      if sudo apt-get install $APT_CONFIRM chromium; then
+        CHROMIUM="chromium"
+      fi
     fi
-  fi
 
-  if [ -z "$CHROMIUM" ]; then
-    echo "Error: Chromium could not be installed." >&2
-    exit 1
+    if [ -z "$CHROMIUM" ]; then
+      echo "Error: Chromium could not be installed." >&2
+      exit 1
+    fi
   fi
 else
-  # Attempt to install firefox variants
-  if sudo apt-get install -y firefox-devedition; then
+  # Detect firefox binary
+  if command -v firefox-devedition >/dev/null 2>&1; then
+    FIREFOX="firefox-devedition"
+  elif command -v firefox >/dev/null 2>&1; then
     FIREFOX="firefox"
   else
-    if sudo apt-get install -y firefox; then
+    # Attempt to install firefox variants
+    if sudo apt-get install $APT_CONFIRM firefox-devedition; then
       FIREFOX="firefox"
+    else
+      if sudo apt-get install $APT_CONFIRM firefox; then
+        FIREFOX="firefox"
+      fi
     fi
-  fi
 
-  if [ -z "$FIREFOX" ]; then
-    echo "Error: Firefox could not be installed." >&2
-    exit 1
+    if [ -z "$FIREFOX" ]; then
+      echo "Error: Firefox could not be installed." >&2
+      exit 1
+    fi
   fi
 fi
 
 # ------------------
 # Remaining packages
 # ------------------
-apt install -y xinit xserver-xorg x11-xserver-utils xinput unclutter pulseaudio
+apt install $APT_CONFIRM xinit xserver-xorg x11-xserver-utils xinput unclutter pulseaudio
 
 # ------------------
 # Configuration
