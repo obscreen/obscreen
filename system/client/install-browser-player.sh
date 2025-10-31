@@ -206,12 +206,22 @@ EOF
 
 
 # Create the systemd service to start the player in kiosk mode
-curl https://raw.githubusercontent.com/obscreen/obscreen/master/system/client/obscreen-player.service  | sed "s#/home/pi#$WORKING_DIR#g" | sed "s#=pi#=$OWNER#g" | tee /etc/systemd/system/obscreen-player.service
+curl https://raw.githubusercontent.com/obscreen/obscreen/master/system/client/obscreen-player.service  | sed "s# pi # $OWNER #g" | sed "s#/home/pi#$WORKING_DIR#g" | sed "s#=pi#=$OWNER#g" | tee /etc/systemd/system/obscreen-player.service
 
 # Reload systemd, enable and start the service
 systemctl daemon-reload
 systemctl enable obscreen-player.service
 systemctl set-default graphical.target
+
+# Disable display managers
+systemctl mask lightdm.service 2>/dev/null || true
+systemctl mask wayfire.service 2>/dev/null || true
+systemctl mask wayfire@.service 2>/dev/null || true
+systemctl mask weston.service 2>/dev/null || true
+systemctl mask weston@.service 2>/dev/null || true
+
+# Restart obscreen-player.service
+systemctl restart obscreen-player.service
 
 # ============================================================
 # Autorun script
