@@ -149,7 +149,7 @@ fi
 # ------------------
 # Remaining packages
 # ------------------
-apt install -y xinit xserver-xorg x11-xserver-utils unclutter pulseaudio
+apt install -y xinit xserver-xorg x11-xserver-utils xinput unclutter pulseaudio
 
 # ------------------
 # Configuration
