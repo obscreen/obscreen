@@ -1,7 +1,13 @@
 #!/bin/bash
 
+# ============================================================================================================
 # Configuration
-## Main Obscreen Studio instance URL (could be a specific playlist /use/[playlist-id] or let obscreen manage playlist routing with /
+# ============================================================================================================
+
+# Enable or disable "touch only" mode for touchscreen displays (true / false)
+TOUCH_ONLY=false
+
+## Main Obscreen Studio instance URL (could be a specific playlist /use/[playlist-id] or let obscreen manage playlist routing with /)
 STUDIO_URL=http://localhost:5000
 ## e.g. 1920x1080 - Force specific resolution (supported list available with command `DISPLAY=:0 xrandr`)
 SCREEN_RESOLUTION=auto
@@ -26,7 +32,9 @@ CLIENT_POSTAL_CODE=
 ### 3. Query address-based positioning (i.e. "1600 Pennsylvania Avenue NW, Washington, DC 20500")
 CLIENT_ADDRESS_QUERY=
 
-# ================================================================================================================================================
+# ============================================================================================================
+# Environment setup
+# ============================================================================================================
 
 # Disable screensaver and DPMS
 xset s off
@@ -36,7 +44,21 @@ xset s noblank
 # Start unclutter to hide the mouse cursor
 unclutter -display :0 -noevents -grab &
 
+# If TOUCH_ONLY = true, disable all pointer like mouse, touchpad, trackpad.
+# This prevents the first tap from only moving the pointer and makes touch interactions direct.
+if [ "$TOUCH_ONLY" = true ]; then
+    echo "TOUCH_ONLY mode enabled: disabling pointer devices..."
+    TO_DISABLE=$(xinput list --name-only | grep -i 'mouse\|pointer\|trackpad\|touchpad')
+    for dev in $TO_DISABLE; do
+        echo "  -> Disabling $dev"
+        xinput disable "$dev"
+    done
+fi
+
+# ============================================================================================================
 # Firefox profile directory and preferences
+# ============================================================================================================
+
 FIREFOX_PROFILE_DIR=$HOME/.config/obscreen-firefox
 mkdir -p "$FIREFOX_PROFILE_DIR" 2>/dev/null
 USER_JS="$FIREFOX_PROFILE_DIR/user.js"
@@ -156,5 +178,3 @@ fi
   --width ${WIDTH} \
   --height ${HEIGHT} \
   ${STUDIO_URL}
-
-
