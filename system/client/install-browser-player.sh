@@ -99,6 +99,19 @@ else
 fi
 
 # ============================================================
+# Functions
+# ============================================================
+
+# Detect if running on Raspberry Pi
+is_raspberry_pi() {
+    if [ -f /proc/device-tree/model ]; then
+        grep -q "Raspberry Pi" /proc/device-tree/model 2>/dev/null
+        return $?
+    fi
+    return 1
+}
+
+# ============================================================
 # Installation
 # ============================================================
 
@@ -181,7 +194,11 @@ usermod -aG tty,video,audio,render $OWNER
 touch /etc/X11/Xwrapper.config
 grep -qxF "allowed_users=anybody" /etc/X11/Xwrapper.config || echo "allowed_users=anybody" | tee -a /etc/X11/Xwrapper.config
 grep -qxF "needs_root_rights=yes" /etc/X11/Xwrapper.config || echo "needs_root_rights=yes" | tee -a /etc/X11/Xwrapper.config
-bash -c "cat > /etc/X11/xorg.conf.d/99-pi-video.conf" <<EOF
+
+# Create Raspberry Pi specific X11 config only if running on Raspberry Pi
+if is_raspberry_pi; then
+    mkdir -p /etc/X11/xorg.conf.d/
+    bash -c "cat > /etc/X11/xorg.conf.d/99-pi-video.conf" <<EOF
 Section "Device"
     Identifier "Raspberry Pi"
     Driver "modesetting"
@@ -203,6 +220,7 @@ Section "ServerFlags"
     Option "OffTime" "0"
 EndSection
 EOF
+fi
 
 
 # Create the systemd service to start the player in kiosk mode
@@ -213,12 +231,18 @@ systemctl daemon-reload
 systemctl enable obscreen-player.service
 systemctl set-default graphical.target
 
-# Disable display managers
-systemctl mask lightdm.service 2>/dev/null || true
-systemctl mask wayfire.service 2>/dev/null || true
-systemctl mask wayfire@.service 2>/dev/null || true
-systemctl mask weston.service 2>/dev/null || true
-systemctl mask weston@.service 2>/dev/null || true
+# Disable display managers only for Raspberry Pi
+if is_raspberry_pi; then
+    echo "Raspberry Pi detected"
+    echo "Disabling display managers"
+    systemctl mask lightdm.service 2>/dev/null || true
+    systemctl mask wayfire.service 2>/dev/null || true
+    systemctl mask wayfire@.service 2>/dev/null || true
+    systemctl mask weston.service 2>/dev/null || true
+    systemctl mask weston@.service 2>/dev/null || true
+    echo "Disabling overscan"
+    raspi-config nonint do_overscan 1
+fi
 
 # Restart obscreen-player.service
 systemctl restart obscreen-player.service
