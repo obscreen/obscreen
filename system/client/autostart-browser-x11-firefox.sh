@@ -243,7 +243,7 @@ fi
 #------------------------------------------------------------------------------------------------------------
 # Virtual keyboard setup
 #------------------------------------------------------------------------------------------------------------
-window_minmax() {
+xdoutil() {
   if command -v xdotool >/dev/null 2>&1; then
     WINDOWS=$(xdotool search --name "$1" 2>/dev/null)
     for window in $WINDOWS; do
@@ -254,7 +254,7 @@ window_minmax() {
 if [ "$TOUCH_VIRTUAL_KEYBOARD" = "true" ]; then
   if command -v onboard >/dev/null 2>&1; then
     DISPLAY=:0 onboard --layout=Small --theme=Droid -x 0 -y $((HEIGHT - HEIGHT/3)) -s ${WIDTH}x$((HEIGHT/3)) &
-    (sleep 5 && window_minmax "onboard" "windowraise") &
+    (sleep 5 && xdoutil "onboard" "windowraise") &
   fi
 fi
 
