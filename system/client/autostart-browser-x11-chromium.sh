@@ -20,6 +20,8 @@ MOUSE_CURSOR_HIDDEN=true
 TOUCH_ENABLED=true
 ## Disable Pinch gesture detection
 TOUCH_PINCH_DISABLED=true
+## Enable virtual keyboard
+TOUCH_VIRTUAL_KEYBOARD=false
 
 #------------------------------------------------------------------------------------------------------------
 # Client metadata
@@ -100,9 +102,17 @@ STUDIO_URL=$(echo $STUDIO_URL | sed 's/[?&]$//')
 #------------------------------------------------------------------------------------------------------------
 # Modify Chromium preferences to avoid restore messages
 CHROMIUM_DIRECTORY=$HOME/.config/chromium
+rm -rf $CHROMIUM_DIRECTORY/Default 2>/dev/null
 mkdir -p $CHROMIUM_DIRECTORY/Default 2>/dev/null
-touch $CHROMIUM_DIRECTORY/Default/Preferences
-sed -i 's/"exited_cleanly": false/"exited_cleanly": true/' $CHROMIUM_DIRECTORY/Default/Preferences
+cat > $CHROMIUM_DIRECTORY/Default/Preferences << 'EOF'
+{
+  "exited_cleanly": true,
+  "credentials_enable_service": false,
+  "profile": {
+    "password_manager_enabled": false
+  }
+}
+EOF
 
 CHROMIUM_EXT_DIR="/home/pi/obscreen/var/run/ext/chromium"
 mkdir -p "$CHROMIUM_EXT_DIR" 2>/dev/null
@@ -117,6 +127,15 @@ else
   echo "Chromium binary not found." >&2
   echo "Please install chromium-browser or chromium." >&2
   exit 1
+fi
+
+#------------------------------------------------------------------------------------------------------------
+# Virtual keyboard setup
+#------------------------------------------------------------------------------------------------------------
+if [ "$TOUCH_VIRTUAL_KEYBOARD" = "true" ]; then
+  if command -v onboard >/dev/null 2>&1; then
+    DISPLAY=:0 onboard --layout=Small --theme=Droid -x 0 -y $((HEIGHT - HEIGHT/3)) -s ${WIDTH}x$((HEIGHT/3)) &
+  fi
 fi
 
 # ============================================================================================================
