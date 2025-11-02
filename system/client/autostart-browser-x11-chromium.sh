@@ -142,7 +142,7 @@ xdoutil() {
 }
 if [ "$TOUCH_VIRTUAL_KEYBOARD" = "true" ]; then
   if command -v onboard >/dev/null 2>&1; then
-    DISPLAY=:0 onboard --layout=Small --theme=Droid -x 0 -y $((HEIGHT - HEIGHT/3)) -s ${WIDTH}x$((HEIGHT/3)) &
+    DISPLAY=:0 onboard --layout=Small --theme=Droid -D 5 -x 0 -y $((HEIGHT - HEIGHT/3)) -s ${WIDTH}x$((HEIGHT/3)) &
     (sleep 5 && xdoutil "onboard" "windowraise") &
   fi
 fi
