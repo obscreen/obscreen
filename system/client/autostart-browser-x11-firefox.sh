@@ -20,6 +20,8 @@ MOUSE_CURSOR_HIDDEN=true
 TOUCH_ENABLED=true
 ## Disable Pinch gesture detection
 TOUCH_PINCH_DISABLED=true
+## Enable virtual keyboard
+TOUCH_VIRTUAL_KEYBOARD=false
 
 #------------------------------------------------------------------------------------------------------------
 # Client metadata
@@ -238,6 +240,14 @@ else
   exit 1
 fi
 
+#------------------------------------------------------------------------------------------------------------
+# Virtual keyboard setup
+#------------------------------------------------------------------------------------------------------------
+if [ "$TOUCH_VIRTUAL_KEYBOARD" = "true" ]; then
+  if command -v onboard >/dev/null 2>&1; then
+    DISPLAY=:0 onboard --layout=Small --theme=Droid -x 0 -y $((HEIGHT - HEIGHT/3)) -s ${WIDTH}x$((HEIGHT/3)) &
+  fi
+fi
 
 # ============================================================================================================
 # Start Firefox in kiosk mode
