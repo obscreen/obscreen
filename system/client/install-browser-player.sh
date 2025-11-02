@@ -252,12 +252,9 @@ systemctl set-default graphical.target
 if is_raspberry_pi; then
     echo "Raspberry Pi detected"
     echo "Disabling display managers"
-    systemctl mask lightdm.service 2>/dev/null || true
-    systemctl mask wayfire.service 2>/dev/null || true
-    systemctl mask wayfire@.service 2>/dev/null || true
-    systemctl mask weston.service 2>/dev/null || true
-    systemctl mask weston@.service 2>/dev/null || true
-    systemctl stop lightdm.service wayfire.service wayfire@.service weston.service weston@.service || true
+    services=(lightdm.service wayfire.service wayfire@.service weston.service weston@.service xdg-desktop-portal.service xdg-document-portal.service xdg-permission-store.service)
+    systemctl mask "${services[@]}" 2>/dev/null || true
+    systemctl stop "${services[@]}" || true
     echo "Disabling overscan"
     raspi-config nonint do_overscan 1
 fi
