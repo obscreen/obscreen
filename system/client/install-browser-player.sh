@@ -195,7 +195,8 @@ fi
 # ------------------
 # Remaining packages
 # ------------------
-apt install $APT_CONFIRM xinit xdotool xserver-xorg x11-xserver-utils xinput unclutter pulseaudio git
+apt install $APT_CONFIRM xinit xserver-xorg x11-xserver-utils xinput unclutter pulseaudio git
+apt install $APT_CONFIRM xdotool onboard || true
 
 # Install unclutter-xfixes
 if apt install $APT_CONFIRM libev-dev libx11-dev libxi-dev; then
