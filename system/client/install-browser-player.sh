@@ -257,6 +257,7 @@ if is_raspberry_pi; then
     systemctl mask wayfire@.service 2>/dev/null || true
     systemctl mask weston.service 2>/dev/null || true
     systemctl mask weston@.service 2>/dev/null || true
+    systemctl stop lightdm.service wayfire.service wayfire@.service weston.service weston@.service || true
     echo "Disabling overscan"
     raspi-config nonint do_overscan 1
 fi
