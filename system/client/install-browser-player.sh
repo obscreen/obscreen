@@ -119,14 +119,8 @@ echo ""
 echo "# Waiting 3 seconds before installation..."
 sleep 3
 
-# Set apt confirmation flag for non-interactive installs
-APT_CONFIRM=
-if [ "$disable_interaction" = true ]; then
-    APT_CONFIRM="-y"
-fi
-
 # Update and install necessary packages
-apt update $APT_CONFIRM
+apt update -y
 
 # ------------------
 # Browser package(s)
@@ -142,10 +136,10 @@ if [ "$PLAYER_BROWSER" = "chromium" ]; then
     CHROMIUM="chromium"
   else
     # Attempt to install chromium-browser
-    if sudo apt-get install $APT_CONFIRM chromium-browser; then
+    if sudo apt-get install -y chromium-browser; then
       CHROMIUM="chromium-browser"
     else
-      if sudo apt-get install $APT_CONFIRM chromium; then
+      if sudo apt-get install -y chromium; then
         CHROMIUM="chromium"
       fi
     fi
@@ -175,12 +169,12 @@ EOF
     FIREFOX="firefox"
   else
     # Attempt to install firefox variants
-    if sudo apt-get install $APT_CONFIRM firefox-devedition; then
+    if sudo apt-get install -y firefox-devedition; then
       FIREFOX="firefox-devedition"
-    elif sudo apt-get install $APT_CONFIRM firefox-esr; then
+    elif sudo apt-get install -y firefox-esr; then
       FIREFOX="firefox-esr"
     else
-      if sudo apt-get install $APT_CONFIRM firefox; then
+      if sudo apt-get install -y firefox; then
         FIREFOX="firefox"
       fi
     fi
@@ -195,11 +189,11 @@ fi
 # ------------------
 # Remaining packages
 # ------------------
-apt install $APT_CONFIRM xinit xserver-xorg x11-xserver-utils xinput unclutter pulseaudio git
-apt install $APT_CONFIRM xdotool onboard || true
+apt install -y xinit xserver-xorg x11-xserver-utils xinput unclutter pulseaudio git
+apt install -y xdotool onboard || true
 
 # Install unclutter-xfixes
-if apt install $APT_CONFIRM libev-dev libx11-dev libxi-dev; then
+if apt install -y libev-dev libx11-dev libxi-dev; then
   git clone https://github.com/obscreen/unclutter-xfixes.git /tmp/unclutter-xfixes
   cd /tmp/unclutter-xfixes
   make
