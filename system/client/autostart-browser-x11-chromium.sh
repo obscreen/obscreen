@@ -67,7 +67,8 @@ if [ "$SCREEN_RESOLUTION" != "auto" ]; then
     xrandr --output $FIRST_CONNECTED_SCREEN --mode $SCREEN_RESOLUTION
 fi
 
-xrandr --output $FIRST_CONNECTED_SCREEN --rotate $SCREEN_ROTATE
+# No need OS-wide, we handle that App-wide
+# xrandr --output $FIRST_CONNECTED_SCREEN --rotate $SCREEN_ROTATE
 
 RESOLUTION=$(DISPLAY=:0 xrandr | grep '*' | awk '{print $1}')
 WIDTH=$(echo $RESOLUTION | cut -d 'x' -f 1)
