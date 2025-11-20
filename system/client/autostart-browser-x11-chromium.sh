@@ -103,7 +103,7 @@ STUDIO_URL=$(echo $STUDIO_URL | sed 's/[?&]$//')
 #------------------------------------------------------------------------------------------------------------
 # Modify Chromium preferences to avoid restore messages
 CHROMIUM_DIRECTORY=$HOME/.config/chromium
-rm -rf $CHROMIUM_DIRECTORY/Default 2>/dev/null
+rm -rf $CHROMIUM_DIRECTORY/Default/Preferences 2>/dev/null
 mkdir -p $CHROMIUM_DIRECTORY/Default 2>/dev/null
 cat > $CHROMIUM_DIRECTORY/Default/Preferences << 'EOF'
 {
