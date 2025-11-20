@@ -104,9 +104,9 @@ STUDIO_URL=$(echo $STUDIO_URL | sed 's/[?&]$//')
 
 # Firefox profile directory and preferences
 FIREFOX_PROFILE_DIR=$HOME/.config/obscreen-firefox
-rm -rf "$FIREFOX_PROFILE_DIR" 2>/dev/null
 mkdir -p "$FIREFOX_PROFILE_DIR" 2>/dev/null
 USER_JS="$FIREFOX_PROFILE_DIR/user.js"
+rm -rf "$USER_JS" 2>/dev/null
 
 cat > "$USER_JS" <<'EOF'
 user_pref("dom.block_external_protocol_in_iframes", false);
