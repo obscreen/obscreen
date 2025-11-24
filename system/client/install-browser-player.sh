@@ -5,6 +5,23 @@ WORKING_DIR=${2:-$HOME}
 STUDIO_URL_ARG=${3:-}
 BROWSER_ARG=${4:-}
 
+# ============================================================
+# Functions
+# ============================================================
+
+# Detect if running on Raspberry Pi
+is_raspberry_pi() {
+    if [ -f /proc/device-tree/model ]; then
+        grep -q "Raspberry Pi" /proc/device-tree/model 2>/dev/null
+        return $?
+    fi
+    return 1
+}
+
+# ============================================================
+# Main
+# ============================================================
+
 echo "# ==============================="
 echo "# Installing Obscreen Player"
 echo "# Using user: $OWNER"
@@ -27,8 +44,8 @@ fi
 
 # Default player browser
 PLAYER_BROWSER="chromium"
-if [ -n "$BROWSER_ARG" ]; then
-    PLAYER_BROWSER="$BROWSER_ARG"
+if is_raspberry_pi; then
+    PLAYER_BROWSER="firefox"
 fi
 
 if [ "$PLAYER_BROWSER" != "chromium" ] && [ "$PLAYER_BROWSER" != "firefox" ]; then
@@ -74,15 +91,19 @@ if [ "$disable_interaction" = false ]; then
         if [ -n "$BROWSER_ARG" ]; then
             PLAYER_BROWSER="$BROWSER_ARG"
         else
-            read -p "Select browser for player: [chromium (default) | firefox]: " browser_choice
-            case $browser_choice in
-                2)
-                    PLAYER_BROWSER="firefox"
-                    ;;
-                *)
-                    PLAYER_BROWSER="chromium"
-                    ;;
-            esac
+            read -p "Select browser for player [chromium | firefox] default($PLAYER_BROWSER): " browser_choice
+            if [ -n "$browser_choice" ]; then
+                # Normalize input to lowercase
+                browser_choice="$(echo "$browser_choice" | tr '[:upper:]' '[:lower:]')"
+                case $browser_choice in
+                    chromium|firefox)
+                        PLAYER_BROWSER="$browser_choice"
+                        ;;
+                    *)
+                        echo "Warning: Invalid browser selected, defaulting to $PLAYER_BROWSER"
+                        ;;
+                esac
+            fi
         fi
 
         echo ""
@@ -97,19 +118,6 @@ else
     echo "Using Obscreen studio instance URL: $DEFAULT_STUDIO_URL"
     echo "Using player browser: $PLAYER_BROWSER"
 fi
-
-# ============================================================
-# Functions
-# ============================================================
-
-# Detect if running on Raspberry Pi
-is_raspberry_pi() {
-    if [ -f /proc/device-tree/model ]; then
-        grep -q "Raspberry Pi" /proc/device-tree/model 2>/dev/null
-        return $?
-    fi
-    return 1
-}
 
 # ============================================================
 # Installation
