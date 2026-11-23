@@ -48,6 +48,11 @@ if is_raspberry_pi; then
     PLAYER_BROWSER="firefox"
 fi
 
+# Browser provided as argument overrides the platform default (interactive or not)
+if [ -n "$BROWSER_ARG" ]; then
+    PLAYER_BROWSER="$(echo "$BROWSER_ARG" | tr '[:upper:]' '[:lower:]')"
+fi
+
 if [ "$PLAYER_BROWSER" != "chromium" ] && [ "$PLAYER_BROWSER" != "firefox" ]; then
     echo "Error: Only 'chromium' or 'firefox' are supported as player browsers. You provided: $PLAYER_BROWSER" >&2
     exit 1
@@ -88,9 +93,8 @@ if [ "$disable_interaction" = false ]; then
         fi
 
 
-        if [ -n "$BROWSER_ARG" ]; then
-            PLAYER_BROWSER="$BROWSER_ARG"
-        else
+        # Only prompt for the browser if it was not provided as argument
+        if [ -z "$BROWSER_ARG" ]; then
             read -p "Select browser for player [chromium | firefox] default($PLAYER_BROWSER): " browser_choice
             if [ -n "$browser_choice" ]; then
                 # Normalize input to lowercase
